@@ -36,3 +36,16 @@ Phân tích hiệu năng của Query Q4 (Tìm sách đang mượn) và Query Q10
 So sánh EXPLAIN trước và sau khi tạo Index.
 
 Kết quả: Cải thiện từ type: ALL sang type: ref/range, giảm số lượng rows phải quét.
+Để kiểm tra bài làm, vui lòng thực hiện theo thứ tự sau trên MySQL/MariaDB (khuyến nghị dùng phpMyAdmin hoặc MySQL Workbench):
+
+Bước 1: Chạy file Lab08_schema.sql để khởi tạo database ql_thu_vien và nạp dữ liệu.
+
+Bước 2: Chạy file Lab08_queries.sql để kiểm tra kết quả 10 câu truy vấn.
+
+Bước 3 (Kiểm tra Index):
+
+Chạy lệnh EXPLAIN cho Q4 hoặc Q10 (khi chưa có index).
+
+Chạy các lệnh CREATE INDEX (như mô tả trong Lab08_explain.txt).
+
+Chạy lại EXPLAIN để thấy sự thay đổi.
