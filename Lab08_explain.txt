@@ -1,0 +1,15 @@
+BÁO CÁO GIẢI THÍCH VỀ INDEX VÀ TỐI ƯU TRUY VẤN
+
+1. Tối ưu truy vấn Q4 (Tìm sách đang được mượn)
+- Index đã tạo: CREATE INDEX idx_loans_status_due ON loans(status, due_date);
+- Lý do: Truy vấn này lọc dữ liệu theo điều kiện `status = 'BORROWED'`.
+- So sánh kết quả EXPLAIN:
+  + Trước khi có Index: Cột `type` là "ALL" (Full Table Scan), cột `key` là NULL. MySQL phải quét toàn bộ bảng `loans` để tìm các dòng có trạng thái đang mượn.
+  + Sau khi có Index: Cột `type` chuyển thành "ref", cột `key` hiển thị `idx_loans_status_due`. Cột `rows` giảm mạnh (chỉ còn quét đúng số dòng đang mượn). MySQL tra cứu trực tiếp vào index thay vì duyệt toàn bộ bảng.
+
+2. Tối ưu truy vấn Q10 (Tìm bạn đọc tích cực trong 30 ngày)
+- Index đã tạo: CREATE INDEX idx_loans_mem_date ON loans(member_id, loan_date);
+- Lý do: Truy vấn này cần lọc theo khoảng thời gian (`loan_date`) và gom nhóm theo thành viên (`member_id`).
+- So sánh kết quả EXPLAIN:
+  + Trước khi có Index: Cột `type` là "ALL", MySQL phải duyệt từng dòng để so sánh ngày tháng, tốn tài nguyên.
+  + Sau khi có Index: Cột `type` chuyển thành "range" (quét theo phạm vi), cột `key` hiển thị `idx_loans_mem_date`. Index giúp MySQL tìm ngay được phạm vi ngày tháng cần thiết và hỗ trợ việc JOIN/GROUP BY hiệu quả hơn.
